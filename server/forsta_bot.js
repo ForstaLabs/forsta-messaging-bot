@@ -6,6 +6,11 @@ const BotAtlasClient = require('./atlas_client');
 const cache = require('./cache');
 const relay = require('librelay');
 
+const cleverbot = require("cleverbot.io");
+const bot = new cleverbot({
+  apiUser: process.env.YOUR_API_USER,
+  apiKey: process.env.YOUR_API_KEY
+});
 
 class ForstaBot {
 
@@ -67,17 +72,24 @@ class ForstaBot {
         }
 
         const dist = await this.resolveTags(msg.distribution.expression);
-        const senderUser = (await this.getUsers([msg.sender.userId]))[0];
 
-        const reply = `Hello, ${senderUser.first_name}!`;
-
-        this.msgSender.send({
-            distribution: dist,
-            threadId: msg.threadId,
-            html: `${ reply }`,
-            text: reply
-        });
+        if (message) {
+            bot.ask(message, (err, reply) => {
+                if (!err) {
+                    console.info(message, reply);
+                    this.msgSender.send({
+                        distribution: dist,
+                        threadId: msg.threadId,
+                        html: `${ reply }`,
+                        text: reply
+                    });
+                } else {
+                    console.info('error', err);
+                }
+            });
+        } else {
+            console.info('(not replying to that one)');
+        }
     }
 }
-
 module.exports = ForstaBot;
