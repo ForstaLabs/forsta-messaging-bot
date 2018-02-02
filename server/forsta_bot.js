@@ -69,6 +69,7 @@ class ForstaBot {
         }
 
         const dist = await this.resolveTags(msg.distribution.expression);
+
         bot.ask(message, (err, response) => {
             if (!err) {
                 console.info("response:", response);
