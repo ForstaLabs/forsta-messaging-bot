@@ -76,7 +76,6 @@ class ForstaBot {
         if (message) {
             bot.ask(message, (err, reply) => {
                 if (!err) {
-                    console.info(message, reply);
                     this.msgSender.send({
                         distribution: dist,
                         threadId: msg.threadId,
