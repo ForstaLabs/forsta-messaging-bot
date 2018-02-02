@@ -7,10 +7,7 @@ const cache = require('./cache');
 const relay = require('librelay');
 
 const cleverbot = require("cleverbot.io");
-const bot = new cleverbot({
-  apiUser: process.env.YOUR_API_USER,
-  apiKey: process.env.YOUR_API_KEY
-});
+const bot = new cleverbot('S8yOZUtt7IpSQwOu','MSHXgnxUg33eLBjr9j4p8DYo1nEOmwZ9');
 
 class ForstaBot {
 
@@ -72,14 +69,22 @@ class ForstaBot {
         }
 
         const dist = await this.resolveTags(msg.distribution.expression);
-        const reply = bot.ask(message);
+        bot.ask(message, (err, response) => {
+            if (!err) {
+                console.info("response:", response);
 
-        this.msgSender.send({
-            distribution: dist,
-            threadId: msg.threadId,
-            html: `${ reply }`,
-            text: reply
+                this.msgSender.send({
+                  distribution: dist,
+                  threadId: msg.threadId,
+                  html: `${ response }`,
+                  text: response
+                });
+
+            } else {
+                console.log("error:", err);
+            }
         });
+
     }
 }
 module.exports = ForstaBot;
