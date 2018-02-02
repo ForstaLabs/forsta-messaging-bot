@@ -72,23 +72,14 @@ class ForstaBot {
         }
 
         const dist = await this.resolveTags(msg.distribution.expression);
+        const reply = bot.ask(message);
 
-        if (message) {
-            bot.ask(message, (err, reply) => {
-                if (!err) {
-                    this.msgSender.send({
-                        distribution: dist,
-                        threadId: msg.threadId,
-                        html: `${ reply }`,
-                        text: reply
-                    });
-                } else {
-                    console.info('error', err);
-                }
-            });
-        } else {
-            console.info('(not replying to that one)');
-        }
+        this.msgSender.send({
+            distribution: dist,
+            threadId: msg.threadId,
+            html: `${ reply }`,
+            text: reply
+        });
     }
 }
 module.exports = ForstaBot;
