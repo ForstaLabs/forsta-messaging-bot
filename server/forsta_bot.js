@@ -5,9 +5,8 @@
 const BotAtlasClient = require('./atlas_client');
 const cache = require('./cache');
 const relay = require('librelay');
-
 const cleverbot = require("cleverbot.io");
-const bot = new cleverbot('S8yOZUtt7IpSQwOu','MSHXgnxUg33eLBjr9j4p8DYo1nEOmwZ9');
+const bot = new cleverbot(process.env.CBOT_API_USER,process.env.CBOT_API_KEY);
 
 class ForstaBot {
 
@@ -67,23 +66,22 @@ class ForstaBot {
             console.error("Received unsupported message:", msgEnvelope);
             return;
         }
-
         const dist = await this.resolveTags(msg.distribution.expression);
 
-        bot.ask(message, (err, response) => {
+        const query = msg.data.body[0].value;
+        bot.ask(query, (err, response) => {
             if (!err) {
-                console.info("response:", response);
-
+                console.info("you:", query);
+                console.info("cleverbot:", response);
                 this.msgSender.send({
-                  distribution: dist,
-                  threadId: msg.threadId,
-                  html: `${ response }`,
-                  text: response
+                    distribution: dist,
+                    threadId: msg.threadId,
+                    html: `${ response }`,
+                    text: response
                 });
-
             } else {
-                console.log("error:", err);
-            }
+            console.info("error:", err);
+          }
         });
 
     }
