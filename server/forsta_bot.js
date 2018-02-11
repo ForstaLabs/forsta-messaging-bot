@@ -27,8 +27,17 @@ class ForstaBot {
 
         this.msgSender = await relay.MessageSender.factory();
 
+        this.bot = await bot.create(function (err, session){
+          err ? console.log("cleverbot error:", err) : console.info("bot session:", session);
+          return bot;
+        });
+
         await this.msgReceiver.connect();
+
     }
+
+
+
 
     stop() {
         if (this.msgReceiver) {
@@ -71,6 +80,7 @@ class ForstaBot {
         const query = msg.data.body[0].value;
         bot.ask(query, (err, response) => {
             if (!err) {
+                ;
                 console.info("you:", query);
                 console.info("cleverbot:", response);
                 this.msgSender.send({
