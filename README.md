@@ -2,9 +2,7 @@ Forsta Messaging Bot
 ========
 Secure autonomous message receipt, processing, storage, and/or transmission on the Forsta messaging platform.
 
-[![NPM](https://img.shields.io/npm/v/forsta-messaging-bot.svg)](https://www.npmjs.com/package/forsta-messaging-bot)
-[![Change Log](https://img.shields.io/badge/change-log-blue.svg)](https://github.com/ForstaLabs/vault/blob/master/CHANGELOG.md)
-[![License](https://img.shields.io/npm/l/forsta-messaging-bot.svg)](https://github.com/ForstaLabs/messaging-bot)
+[License](https://github.com/ForstaLabs/messaging-bot/blob/master/LICENSE)
 
 
 About
@@ -13,6 +11,11 @@ This repository is a (skeleton) Node.js-based Forsta end-to-end-encrypted messag
 It allows for autonomous receipt, processing, storage, and/or transmission of messaging 
 data to perform some useful task. Please fork it or one of our several projects based 
 off of it!
+
+ * (Live Chat Bot)[https://github.com/ForstaLabs/live-chat-bot]
+ * (Translation Bot)[https://github.com/ForstaLabs/translation-bot]
+ * (Compliance Monitor)[https://github.com/ForstaLabs/compliance-monitor]
+ * (Message Vault)[https://github.com/ForstaLabs/message-vault]
 
 A Forsta messaging bot can be set up to receive messages sent to a particular user, 
 **or** (if you are an organization administrator) it can be set up as a special 
@@ -59,8 +62,6 @@ These deployment buttons can be used to validate that this messaging bot
 will meet your organizations needs with as little setup pain as possible.  
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/ForstaLabs/messaging-bot)
-[![Deploy to Docker Cloud](https://files.cloud.docker.com/images/deploy-to-dockercloud.svg)](https://cloud.docker.com/stack/deploy/)
-
 
 Install Requirements
 --------
