@@ -72,6 +72,11 @@ class ForstaBot {
             return;
         }
 
+        console.log('ev: ');
+        console.log(ev);
+        console.log('message: ');
+        console.log(message);
+
         const dist = await this.resolveTags(msg.distribution.expression);
         const senderUser = (await this.getUsers([msg.sender.userId]))[0];
 
