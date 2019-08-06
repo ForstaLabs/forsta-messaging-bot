@@ -4,10 +4,10 @@
 <template>
     <div class="ui main text container" style="margin-top: 80px;">
         <div class="ui container center aligned">
-            <div class="ui basic segment">
-                <h1>
-                    <i class="large circular sign in icon"></i>
-                    Enter Forsta {{label}}
+            <div class="ui basic segment huge">
+                <h1 class="ui header">
+                    <i class="circular icon user"></i>
+                    Messaging Bot Login
                 </h1>
             </div>
             <div class="ui centered grid">
@@ -28,7 +28,7 @@
                             </div>
                         </div>
                         <button class="ui large primary submit button right floated" type="submit">Submit</button>
-                        <router-link :to="{name: 'onboardTag'}" class="ui large button secret-cancel">Cancel</router-link>
+                        <router-link :to="{name: 'loginTag'}" class="ui large button secret-cancel">Cancel</router-link>
                         <sui-message size="small" negative v-if="error" :content="error" />
                     </form>
                 </div>
@@ -80,14 +80,13 @@ module.exports = {
             var type = this.type;
             var otp = this.otp;
             this.loading = true;
-            util.fetch.call(this, '/api/onboard/atlasauth/complete/v1/' + tag, { method: 'post', body: { value, type, otp }})
+            util.fetch.call(this, '/api/auth/atlasauth/authenticate/v1/' + tag, { method: 'post', body: { value, type, otp }})
             .then(result => {
                 this.loading = false;
                 if (result.ok) {
                     const { token } = result.theJson;
                     this.global.apiToken = token;
-                    this.global.onboardStatus = 'complete';
-                    this.$router.push({ name: 'triggers' });
+                    this.$router.push({ name: 'dashboard' });
                     return false;
                 } else {
                     this.error = util.mergeErrors(result.theJson) || 'Internal error, please try again.';

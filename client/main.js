@@ -8,13 +8,14 @@ function main() {
 
     const Root = require('./root.vue');
     const routes = [
-        { path: '/welcome', name: 'welcome', component: require('./welcome/welcome.vue') },
-        { path: '/auth/tag', name: 'loginTag', component: require('./auth/loginTag.vue') },
-        { path: '/auth/code', name: 'loginCode', component: require('./auth/loginCode.vue') },
-        { path: '/onboard/tag', name: 'onboardTag', component: require('./onboard/onboardTag.vue') },
-        { path: '/onboard/auth/:type/:tag', name: 'onboardAuth', component: require('./onboard/onboardAuth.vue') },
-        { path: '/settings', name: 'settings', component: require('./settings/settings.vue') },
-        { path: '/dashboard', name: 'dashboard', component: require('./dashboard/dashboard.vue') },
+        { path: '/welcome', name: 'welcome', component: require('./views/welcome.vue') },
+        { path: '/auth/tag', name: 'loginTag', component: require('./views/loginTag.vue') },
+        { path: '/auth/auth/:type/:tag', name: 'loginAuth', component: require('./views/loginAuth.vue') },
+        { path: '/onboard/tag', name: 'onboardTag', component: require('./views/onboardTag.vue') },
+        { path: '/onboard/auth/:type/:tag', name: 'onboardAuth', component: require('./views/onboardAuth.vue') },
+        { path: '/onboard/complete/', name: 'onboardComplete', component: require('./views/onboardComplete.vue')},
+        { path: '/settings', name: 'settings', component: require('./views/settings.vue') },
+        { path: '/dashboard', name: 'dashboard', component: require('./views/dashboard.vue') },
         { path: '*', redirect: '/welcome' },
     ];
 

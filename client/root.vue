@@ -3,28 +3,25 @@
 
 <template>
     <div>
-        <top-menu />
+        <top-menu v-if="global.apiToken && global.onboardStatus == 'complete'"/>
         <router-view />
-        <bottom-menu />
     </div>
 </template>
 
 <script>
 shared = require('./globalState');
 util = require('./util');
-topMenu = require('./menu/top.vue');
-bottomMenu = require('./menu/bottom.vue');
+topMenu = require('./components/topMenu.vue');
 
 module.exports = {
     data: () => ({ 
         global: shared.state
     }),
     components: {
-        'top-menu': topMenu,
-        'bottom-menu': bottomMenu
+        'top-menu': topMenu
     },
     computed: {
-        globalApiToken: function() { return this.global.apiToken; },
+        globalApiToken () { return this.global.apiToken; },
     },
     watch: {
         globalApiToken: function (next, prev) {
