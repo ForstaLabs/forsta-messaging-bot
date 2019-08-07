@@ -24,7 +24,6 @@ class BotAtlasClient extends relay.AtlasClient {
                 method: "POST",
                 json: Object.assign({}, botUserInfo, { phone: creatorUser.phone, email: creatorUser.email, user_type: "BOT" })
             });
-            console.log(botUser);
             console.info(
                 `Created new bot user @${botUser.tag.slug}:${botUser.org.slug} <${botUser.id}>`
             );

@@ -4,10 +4,6 @@ const BotAtlasClient = require('./atlas_client');
 const cache = require('./cache');
 const relay = require('librelay');
 const uuid4 = require("uuid/v4");
-const moment = require("moment");
-const words = require("./authwords");
-
-const AUTH_FAIL_THRESHOLD = 10;
 
 class ForstaBot {
 
@@ -53,10 +49,6 @@ class ForstaBot {
         console.error('Message Error', e, e.stack);
     }
 
-    fqTag(user) { return `@${user.tag.slug}:${user.org.slug}`; }
-    fqName(user) { return [user.first_name, user.middle_name, user.last_name].map(s => (s || '').trim()).filter(s => !!s).join(' '); }
-    fqLabel(user) { return `${this.fqTag(user)} (${this.fqName(user)})`; }
-
     async onMessage(ev) {
         const message = ev.data.message;
         const msgEnvelope = JSON.parse(message.body);
@@ -69,6 +61,10 @@ class ForstaBot {
         }
         if (!msg) {
             console.error("Received unsupported message:", msgEnvelope);
+            return;
+        }
+        // ignore control messages, they are for the messenger
+        if(msg.data.control) {
             return;
         }
 
@@ -90,34 +86,9 @@ class ForstaBot {
         });
     }
 
-    forgetStaleNotificationThreads() {
-        let tooOld = new Date();
-        tooOld.setDate(tooOld.getDate() - 7);
-
-        Object.keys(this.notificationThread).forEach(n => {
-            if (this.notificationThread[n].flaggedEntry.received < tooOld) {
-                delete this.notificationThread[n];
-            }
-        });
-        console.log('stale notification threads removed. currently tracking:', Object.assign({}, this.notificationThread));
-    }
-
-    async incrementAuthFailCount() {
-        let fails = await relay.storage.get('authentication', 'fails', {count: 0, since: new Date()});
-        fails.count++;
-
-        if (fails.count >= AUTH_FAIL_THRESHOLD) {
-            await this.broadcastNotice({
-                note: `SECURITY ALERT!\n\n${fails.count} failed login attempts (last successful login was ${moment(fails.since).fromNow()})`
-            });
-        }
-
-        await relay.storage.set('authentication', 'fails', fails);
-    }
-
-    async resetAuthFailCount() {
-        await relay.storage.set('authentication', 'fails', {count: 0, since: new Date()});
-    }
+    fqTag(user) { return `@${user.tag.slug}:${user.org.slug}`; }
+    fqName(user) { return [user.first_name, user.middle_name, user.last_name].map(s => (s || '').trim()).filter(s => !!s).join(' '); }
+    fqLabel(user) { return `${this.fqTag(user)} (${this.fqName(user)})`; }
 
     async getSoloAuthThreadId() {
         let id = await relay.storage.get('authentication', 'soloThreadId');
@@ -137,76 +108,6 @@ class ForstaBot {
         }
 
         return id;
-    }
-
-    genAuthCode(expirationMinutes) {
-        const code = `${words.adjective()} ${words.noun()}`;
-        const expires = new Date();
-        expires.setMinutes(expires.getMinutes() + expirationMinutes);
-        return { code, expires };
-    }
-
-    removeExpiredAuthCodes(pending) {
-        const now = new Date();
-
-        Object.keys(pending).forEach(uid => {
-            pending[uid].expires = new Date(pending[uid].expires);
-            if (pending[uid].expires < now) {
-                delete pending[uid];
-            }
-        });
-
-        return pending;
-    }
-
-    async sendAuthCode(tag) {
-        tag = (tag && tag[0] === '@') ? tag : '@' + tag;
-        const resolved = await this.resolveTags(tag);
-        if (resolved.userids.length === 1 && resolved.warnings.length === 0) {
-            const uid = resolved.userids[0];
-            const adminIds = await relay.storage.get('authentication', 'adminIds');
-            if (!adminIds.includes(uid)) {
-                throw { statusCode: 403, info: { tag: ['not an authorized user'] } }; 
-            }
-
-            const auth = this.genAuthCode(1);
-            console.log(auth, resolved);
-            this.msgSender.send({
-                distribution: resolved,
-                threadTitle: 'Message Bot Login',
-                threadId: await this.getGroupAuthThreadId(),
-                text: `codewords: ${auth.code}\n(valid for one minute)`
-            });
-            const pending = await relay.storage.get('authentication', 'pending', {});
-            pending[uid] = auth;
-            await relay.storage.set('authentication', 'pending', pending);
-            
-            return resolved.userids[0];
-        } else {
-            throw { statusCode: 400, info: { tag: ['not a recognized tag, please try again'] } }; 
-        }
-    }
-
-    async validateAuthCode(userId, code) {
-        console.log(userId, code);
-        let pending = await relay.storage.get('authentication', 'pending', {});
-        pending = this.removeExpiredAuthCodes(pending);
-        const auth = pending[userId];
-        if (!auth) {
-            throw { statusCode: 403, info: { code: ['no authentication pending, please start over'] } }; 
-        }
-        if (auth.code != code) {
-            this.incrementAuthFailCount();
-            await relay.util.sleep(.5); // throttle guessers
-            throw { statusCode: 403, info: { code: ['incorrect codewords, please try again'] } }; 
-        }
-
-        delete pending[userId];
-        relay.storage.set('authentication', 'pending', pending);
-
-        await this.broadcastNotice({note: 'LOGIN', actorUserId: userId, listAll: false});
-        await this.resetAuthFailCount();
-        return true;
     }
 
     async getAdministrators() {
