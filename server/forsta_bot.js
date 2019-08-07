@@ -16,6 +16,8 @@ class ForstaBot {
         console.info("Starting message receiver for:", ourId);
         this.atlas = await BotAtlasClient.factory();
         this.getUsers = cache.ttl(60, this.atlas.getUsers.bind(this.atlas));
+        this.botUser = this.getUsers([this.ourId])[0];
+        console.log(this.botUser);
         this.resolveTags = cache.ttl(60, this.atlas.resolveTags.bind(this.atlas));
         this.msgReceiver = await relay.MessageReceiver.factory();
         this.msgReceiver.addEventListener('keychange', this.onKeyChange.bind(this));
@@ -50,9 +52,11 @@ class ForstaBot {
     }
 
     async onMessage(ev) {
+        //extract the message data from the 'message' event
         const message = ev.data.message;
         const msgEnvelope = JSON.parse(message.body);
         let msg;
+        //ensure the message is version 1
         for (const x of msgEnvelope) {
             if (x.version === 1) {
                 msg = x;
@@ -63,21 +67,23 @@ class ForstaBot {
             console.error("Received unsupported message:", msgEnvelope);
             return;
         }
+
         // ignore control messages, they are for the messenger
         if(msg.data.control) {
             return;
         }
 
-        console.log('ev: ');
-        console.log(ev);
-        console.log('message: ');
-        console.log(message);
+        //log the message data
+        console.log('msg: ');
+        console.log(msg);
 
+        // determine the incoming messages' distribution (who the message is sent to)
         const dist = await this.resolveTags(msg.distribution.expression);
+        // retrieve user data from atlas using the sender's user id
         const senderUser = (await this.getUsers([msg.sender.userId]))[0];
-
+        // construct a reply message with their first name
         const reply = `Hello, ${senderUser.first_name}!`;
-
+        // send the message to the same users on the same thread that it was recieved from        
         this.msgSender.send({
             distribution: dist,
             threadId: msg.threadId,
