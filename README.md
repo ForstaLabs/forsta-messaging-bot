@@ -70,32 +70,14 @@ Install Requirements
    * sass (`gem install sass`)
    
 
-Installation
---------
-You can choose from our official docker image or NPM package depending on your
-preference.
-
-### Docker
-    docker run -p4096:4096 forstalabs/messaging-bot
-
-Or to run a stack using docker-compose that includes redis for storage...
-
-    docker-compose up
-
-### NPM
-    npm install -g forsta-messaging-bot
-    messaging-bot
-
-
 Developer Install
 --------
-If you want to build upon the Forsta Messaging Bot or just get closer to the code, 
+If you want to build upon the Forsta Messaging Bot
 you can install and run directly from the source code.
 
     git clone https://github.com/ForstaLabs/messaging-bot.git
     cd messaging-bot
-    npm install
-    npm start
+    make run
 
 
 Usage
