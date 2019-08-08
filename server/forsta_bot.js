@@ -18,7 +18,8 @@ class ForstaBot {
         this.atlas = await BotAtlasClient.factory();
         // retrieves users via Atlas' GET /v1/user/ endpoint
         this.getUsers = cache.ttl(60, this.atlas.getUsers.bind(this.atlas));
-        this.botUser = this.getUsers([this.ourId])[0];
+        this.botUser = (await this.getUsers([this.ourId]))[0];
+        console.log(this.botUser);
         // atlas.forsta.io GET /v1/tagmath/
         this.resolveTags = cache.ttl(60, this.atlas.resolveTags.bind(this.atlas));
         this.msgReceiver = await relay.MessageReceiver.factory();
