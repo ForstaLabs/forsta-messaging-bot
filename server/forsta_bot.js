@@ -9,16 +9,17 @@ class ForstaBot {
 
     async start() {
         // the bot's user id is used for addressing messages
-        const ourId = await relay.storage.getState('addr');
-        if (!ourId) {
+        this.ourId = await relay.storage.getState('addr');
+        if (!this.ourId) {
             console.warn("bot is not yet registered");
             return;
         }
-        console.info("Starting message receiver for:", ourId);
+        console.info("Starting message receiver for:", this.ourId);
         this.atlas = await BotAtlasClient.factory();
         // retrieves users via Atlas' GET /v1/user/ endpoint
         this.getUsers = cache.ttl(60, this.atlas.getUsers.bind(this.atlas));
         this.botUser = this.getUsers([this.ourId])[0];
+        // atlas.forsta.io GET /v1/tagmath/
         this.resolveTags = cache.ttl(60, this.atlas.resolveTags.bind(this.atlas));
         this.msgReceiver = await relay.MessageReceiver.factory();
         this.msgReceiver.addEventListener('keychange', this.onKeyChange.bind(this));
