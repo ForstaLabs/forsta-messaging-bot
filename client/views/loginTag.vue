@@ -31,9 +31,6 @@
                     </form>
                 </div>
             </div>
-            <div class="ui basic segment">
-                <p>Please enter your Forsta address tag to receive login codewords for this site.</p>
-            </div>
         </div>
     </div>
 </template>
