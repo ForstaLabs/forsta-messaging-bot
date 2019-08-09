@@ -25,7 +25,7 @@ class APIHandler {
     asyncRoute(fn, requireAuth=true) {
         if (process.env.API_AUTH_OVERRIDE === 'insecure') requireAuth = false;
 
-        /* Add error handling for async exceptions.  Otherwise the server just hangs
+        /* Adds error handling for async exceptions.  Otherwise the server just hangs
          * the request or subclasses have to do this by hand for each async routine. */
         return (req, res, next) => {
             if (requireAuth) {
@@ -94,7 +94,7 @@ class AuthenticationAPIV1 extends APIHandler {
     async onStatusGet(req, res, next) {
         const registered = await BotAtlasClient.onboardComplete();
         res.status(200).json({
-            status: registered ? 'complete' : (BotAtlasClient.onboardingCreatedUser ? 'authenticate-admin' : 'authenticate-user')
+            status: registered ? 'complete' : 'authenticate-admin'
         });
     }
 
@@ -114,7 +114,7 @@ class AuthenticationAPIV1 extends APIHandler {
                 const admins = await this.server.bot.getAdministrators();
                 const isAdmin = admins.filter(a => a.label.split(" ")[0] === "@" + tag);
                 if (isAdmin.length === 0) {
-                    throw { code: '500', json: { "botAdmin": "You need to authorized by the bot owner to manage this bot." } };
+                    throw { code: '500', json: { "botAdmin": "You need to be a bot adminstrator." } };
                 }
             }
             let result = await BotAtlasClient.requestAuthentication(tag);
@@ -215,8 +215,6 @@ class AuthenticationAPIV1 extends APIHandler {
             return;
         }
         try {
-            console.log("onboarder client available for .onboard?");
-            console.log(this.onboarderClient ? "yes" : "no");
             await BotAtlasClient.onboard(this.onboarderClient, req.body);
         } catch (e) {
             if (e.code === 403) {

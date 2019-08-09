@@ -2,7 +2,7 @@ Forsta Messaging Bot
 ========
 Secure autonomous message receipt, processing, storage, and/or transmission on the Forsta messaging platform.
 
-[License](https://github.com/ForstaLabs/messaging-bot/blob/master/LICENSE)
+[License](https://github.com/ForstaLabs/forsta-messaging-bot/blob/master/LICENSE)
 
 
 About
@@ -12,10 +12,10 @@ It allows for autonomous receipt, processing, storage, and/or transmission of me
 data to perform some useful task. Please fork it or one of our several projects based 
 off of it!
 
- * [Live Chat Bot](https://github.com/ForstaLabs/live-chat-bot)
- * [Translation Bot](https://github.com/ForstaLabs/translation-bot)
- * [Compliance Monitor](https://github.com/ForstaLabs/compliance-monitor)
- * [Message Vault](https://github.com/ForstaLabs/message-vault)
+ * [Live Chat Bot](https://github.com/ForstaLabs/forsta-live-chat-bot)
+ * [Translation Bot](https://github.com/ForstaLabs/forsta-translation-bot)
+ * [Compliance Monitor](https://github.com/ForstaLabs/forsta-compliance-monitor)
+ * [Message Vault](https://github.com/ForstaLabs/forsta-message-vault)
 
 A Forsta messaging bot can be set up to receive messages sent to a particular user, 
 **or** (if you are an organization administrator) it can be set up as a special 
@@ -61,7 +61,7 @@ Quick Start
 These deployment buttons can be used to validate that this messaging bot
 will meet your organizations needs with as little setup pain as possible.  
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/ForstaLabs/messaging-bot)
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/ForstaLabs/forsta-messaging-bot)
 
 Install Requirements
 --------
@@ -75,7 +75,7 @@ Developer Install
 If you want to build upon the Forsta Messaging Bot
 you can install and run directly from the source code.
 
-    git clone https://github.com/ForstaLabs/messaging-bot.git
+    git clone https://github.com/ForstaLabs/forsta-messaging-bot.git
     cd messaging-bot
     make run
 
