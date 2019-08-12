@@ -5,7 +5,7 @@
   "engines": {
     "node": "8"
   },
-  "repository": "ForstaLabs/messaging-bot",
+  "repository": "ForstaLabs/forsta-messaging-bot",
   "keywords": [
     "forsta",
     "e-discovery",
@@ -13,9 +13,9 @@
   ],
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/ForstaLabs/messaging-bot/issues"
+    "url": "https://github.com/ForstaLabs/forsta-messaging-bot/issues"
   },
-  "homepage": "https://github.com/ForstaLabs/messaging-bot#readme",
+  "homepage": "https://github.com/ForstaLabs/forsta-messaging-bot#readme",
   "scripts": {
     "postinstall": "SKIP_PACKAGES=1 make",
     "start": "node server"

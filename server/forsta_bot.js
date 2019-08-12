@@ -55,7 +55,7 @@ class ForstaBot {
     }
 
     async onMessage(ev) {
-        //extract the message data from the 'message' event
+        //extract the message data from the message event
         const message = ev.data.message;
         const msgEnvelope = JSON.parse(message.body);
         let msg;
@@ -76,17 +76,16 @@ class ForstaBot {
             return;
         }
 
-        //log the message data
-        console.log('msg: ');
+        console.log('received message: ');
         console.log(msg);
 
         // determine the incoming messages' distribution (who the message is sent to)
         const dist = await this.resolveTags(msg.distribution.expression);
-        // retrieve user data from atlas using the sender's user id
+        // retrieve user data from Atlas using the sender's user id
         const senderUser = (await this.getUsers([msg.sender.userId]))[0];
         // construct a reply message with their first name
         const reply = `Hello, ${senderUser.first_name}!`;
-        // send the message to the same users on the same thread that it was recieved from        
+        // send the message    
         this.msgSender.send({
             distribution: dist,
             threadId: msg.threadId,
@@ -95,9 +94,17 @@ class ForstaBot {
         });
     }
 
-    fqTag(user) { return `@${user.tag.slug}:${user.org.slug}`; }
-    fqName(user) { return [user.first_name, user.middle_name, user.last_name].map(s => (s || '').trim()).filter(s => !!s).join(' '); }
-    fqLabel(user) { return `${this.fqTag(user)} (${this.fqName(user)})`; }
+    fqTag(user) { 
+        return `@${user.tag.slug}:${user.org.slug}`; 
+    }
+
+    fqName(user) { 
+        return [user.first_name, user.middle_name, user.last_name].map(s => (s || '').trim()).filter(s => !!s).join(' '); 
+    }
+
+    fqLabel(user) { 
+        return `${this.fqTag(user)} (${this.fqName(user)})`; 
+    }
 
     async getSoloAuthThreadId() {
         let id = await relay.storage.get('authentication', 'soloThreadId');
