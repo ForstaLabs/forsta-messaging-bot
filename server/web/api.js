@@ -232,6 +232,8 @@ class AdminsAPIV1 extends APIHandler {
         this.router.get('/v1', this.asyncRoute(this.onGetAdministrators, true));
         this.router.post('/v1', this.asyncRoute(this.onUpdateAdministrators, true));
         this.router.get('/v1/bot-user/', this.asyncRoute(this.onGetBotUser, true));
+        this.router.get('/commands/', this.asyncRoute(this.onGetCommands, true));
+        this.router.post('/commands/', this.asyncRoute(this.onPostCommands, true));
     }
 
     async onGetAdministrators(req, res) {
@@ -271,6 +273,17 @@ class AdminsAPIV1 extends APIHandler {
     async onGetBotUser(req, res) {
         const botUser = this.server.bot.botUser;
         res.status(200).json({ botUser });
+    }
+
+    async onGetCommands(req, res) {
+        // 'messaging-bot' is the namespace
+        // 'commands' is the key
+        let commands = await relay.storage.get('messaging-bot', 'commands') || [];
+        res.status(200).json({ commands });
+    }
+
+    async onPostCommands(req, res) {
+        relay.storage.set('messaging-bot', 'commands', req.body.commands);
     }
 }
 

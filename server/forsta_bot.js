@@ -9,6 +9,8 @@ class ForstaBot {
 
     async start() {
         // the bot's user id is used for addressing messages
+        // without it, we wont be able to use librelay.MessageReciever 
+        // or librelay.MessageSender
         this.ourId = await relay.storage.getState('addr');
         if (!this.ourId) {
             console.warn("bot is not yet registered");
@@ -81,16 +83,20 @@ class ForstaBot {
 
         // determine the incoming messages' distribution (who the message is sent to)
         const dist = await this.resolveTags(msg.distribution.expression);
-        // retrieve user data from Atlas using the sender's user id
-        const senderUser = (await this.getUsers([msg.sender.userId]))[0];
-        // construct a reply message with their first name
-        const reply = `Hello, ${senderUser.first_name}!`;
-        // send the message    
-        this.msgSender.send({
-            distribution: dist,
-            threadId: msg.threadId,
-            html: `${ reply }`,
-            text: reply
+        // grab message content
+        const messageText = msg.data.body[0].value;
+        // retrieve all the commands from storage
+        const commands = await relay.storage.get('messaging-bot', 'commands') || [];
+        commands.forEach(command => {
+            if (messageText.split(" ").find(word => word == command.name)) {
+                console.log(command.response);
+                this.msgSender.send({
+                    distribution: dist,
+                    threadId: msg.threadId,
+                    html: `${ command.response }`,
+                    text: command.response
+                });
+            }
         });
     }
 
